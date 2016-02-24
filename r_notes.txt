@@ -1,0 +1,7 @@
+Use this to have a layered histogram:
+This plots health column as a histogram, and then is grouped by the passed output column
+ggplot(dat, aes(x=health,group=passed,fill=as.factor(passed))) +
++     geom_histogram(position="identity", alpha=0.5,right=TRUE) +
++     scale_fill_discrete(name="Passed?") +
++     theme_bw(base_size=20) +
++     xlab("values")
