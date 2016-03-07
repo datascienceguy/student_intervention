@@ -115,13 +115,15 @@ def train_predict(clf, X_train, y_train, X_test, y_test):
 # # Note: Keep the test set constant
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.svm import SVC
-#from sklearn.linear_model import SGDClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import SGDClassifier
 #from sklearn.neighbors.nearest_centroid import NearestCentroid
 
 classifiers = [clf]
 classifiers.append(GradientBoostingClassifier())
 classifiers.append(SVC())
-#classifiers.append(SGDClassifier(shuffle=True))
+classifiers.append(KNeighborsClassifier())
+classifiers.append(SGDClassifier(shuffle=True))
 #classifiers.append(NearestCentroid())
 
 
@@ -129,30 +131,59 @@ for classifier in classifiers:
     for train_size in [100, 200, 300]:
         train_predict(classifier, X_train[:train_size], y_train[:train_size], X_test, y_test)
 
-# # TODO: Fine-tune your model and report the best F1 score
+# TODO: Fine-tune your model and report the best F1 score
 from sklearn.grid_search import GridSearchCV
 
-# svmClassifier = SVC()
-# parameters = {'C':[0.1, 0.5, 1, 5, 10, 50, 100, 1000], \
-#             #   'kernel':['rbf'], \
-#               'gamma':[0.00001, 0.0001, 0.001, 0.01, 0.1, 0.5, 1, 2] \
+# sgdClassifier = SGDClassifier(shuffle=True)
+#
+# parameters = {'n_neighbors':[1,3,5,10,15,25], \
+#              'p':[1,2,3], \
+#              'algorithm':['ball_tree','kd_tree','brute'], \
+#              'weights':['uniform','distance']
 #              }
-# gsClassifier = GridSearchCV(estimator=svmClassifier, param_grid=parameters, cv=5)
+# gsClassifier = GridSearchCV(estimator=sgdClassifier, param_grid=parameters, cv=5)
 # print "Final Model: "
 # train_classifier(gsClassifier, X_train, y_train)
 # best_classifier = gsClassifier.best_estimator_
 # print best_classifier
 # train_predict(best_classifier, X_train, y_train, X_test, y_test)
 
-boostingClassifier = GradientBoostingClassifier()
-parameters = { \
-'n_estimators':[10,25,50,100], \
-              'learning_rate':[0.01, 0.1, 0.25, 0.5, 0.75, 1], \
-              'max_depth':[1,5,10] \
+# knnClassifier = KNeighborsClassifier()
+#
+# parameters = {'n_neighbors':[1,3,5,10,15,25], \
+#              'p':[1,2,3], \
+#              'algorithm':['ball_tree','kd_tree','brute'], \
+#              'weights':['uniform','distance']
+#              }
+# gsClassifier = GridSearchCV(estimator=knnClassifier, param_grid=parameters, cv=5)
+# print "Final Model: "
+# train_classifier(gsClassifier, X_train, y_train)
+# best_classifier = gsClassifier.best_estimator_
+# print best_classifier
+# train_predict(best_classifier, X_train, y_train, X_test, y_test)
+
+svmClassifier = SVC()
+
+parameters = {'C':[0.1, 0.5, 1, 5, 10, 30, 50, 100, 1000], \
+              'kernel':['rbf', 'sigmoid'], \
+              'gamma':[0.001, 0.01, 0.1, 0.5, 1, 2] \
              }
-gsClassifier = GridSearchCV(estimator=boostingClassifier, param_grid=parameters, cv=25)
+gsClassifier = GridSearchCV(estimator=svmClassifier, param_grid=parameters, cv=5)
 print "Final Model: "
 train_classifier(gsClassifier, X_train, y_train)
 best_classifier = gsClassifier.best_estimator_
 print best_classifier
 train_predict(best_classifier, X_train, y_train, X_test, y_test)
+
+# boostingClassifier = GradientBoostingClassifier()
+# parameters = { \
+#               'n_estimators':[10,25,50,100], \
+#             #   'learning_rate':[0.01, 0.1, 0.25, 0.5, 0.75, 1], \
+#               'max_depth':[1,5,10] \
+#              }
+# gsClassifier = GridSearchCV(estimator=boostingClassifier, param_grid=parameters, cv=5)
+# print "Final Model: "
+# train_classifier(gsClassifier, X_train, y_train)
+# best_classifier = gsClassifier.best_estimator_
+# print best_classifier
+# train_predict(best_classifier, X_train, y_train, X_test, y_test)
